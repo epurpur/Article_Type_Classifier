@@ -35,6 +35,7 @@ classifier = load_classifier()
 # -----------------------------
 # PDF Text Extraction
 # -----------------------------
+#Using pdfplumber library, extracts full text of uploaded pdf
 
 def extract_text_from_pdf(uploaded_file):
     full_text = ""
@@ -49,18 +50,29 @@ def extract_text_from_pdf(uploaded_file):
 # Document Classification
 # -----------------------------
 
+#Asking the AI: 'Given this text, which of theses two descriptions best matches it'
+#    - scholary peer-reviewed academic article
+#    - popular or non-academic article
+#Using Zero Shot Classification which is a machine learning technique that allows a model to 
+#classify data into categories it has never seen during training.
+
+
 def classify_text(text):
     labels = [
         "scholarly peer-reviewed academic article",
         "popular or non-academic article"
     ]
 
+    #the models receives the document text and possible labels
+    #It calculates the probability score for each label based on semantic similarity
+    #It returns a ranked result of scholarly vs not scholarly.
     result = classifier(text, labels)
     return result
 
 # -----------------------------
 # Heuristic Evidence (Explainability)
 # -----------------------------
+#Gathering heuristics to explain why an article is or isn't an academic article
 
 def scholarly_indicators(text):
     indicators = {
@@ -76,8 +88,8 @@ def scholarly_indicators(text):
 # -----------------------------
 
 st.title("📄 AI Scholarly Article Detector")
-st.markdown("Upload a PDF and this AI will determine if it is peer-reviewed or a popular source.")
-
+st.markdown("Upload a PDF and this AI will determine if it is peer-reviewed or a popular source and explain why.")
+   
 uploaded_file = st.file_uploader("Upload PDF", type=["pdf"])
 
 if uploaded_file:
